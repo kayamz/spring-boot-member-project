@@ -13,7 +13,9 @@
 <!-- action속성 : form에 작성한 데이터를 어디로 보낼지 지정 -->
 <form action="/member/save" method="post">
     <!-- name속성 : 서버로 전송할 때 변수이름의 역할 -->
+    <!-- onkeyup 대신 onblur 사용할 경우 : 해당 input 칸에서 벗어나면 함수가 실행됨. -->
     이메일 : <input type="text" name="memberEmail" id="memberEmail" onkeyup="emailCheck()"> <br>
+    <p id="check-result"></p>
     비밀번호 : <input type="password" name="memberPassword"> <br>
     이름 : <input type="text" name="memberName"> <br>
     <input type="submit" value="회원가입">
@@ -22,6 +24,7 @@
 <script th:inline="javascript">
     const emailCheck = () => {
         const email = document.getElementById("memberEmail").value;
+        const checkResult = document.getElementById("check-result");
         console.log("입력값 : ", email);
         $.ajax({
             // 요청방식 : post, url : "email-check", 데이터 : 이메일
@@ -32,6 +35,15 @@
             },
             success : function(res) {
                 console.log("요청성공", res);
+                if (res=="ok") {
+                    console.log("사용 가능한 이메일");
+                    checkResult.style.color = "green";
+                    checkResult.innerHTML = "사용 가능한 이메일";
+                } else {
+                    console.log("이미 사용중인 이메일");
+                    checkResult.style.color = "red";
+                    checkResult.innerHTML = "이미 사용중인 이메일";
+                }
             },
             error : function(err) {
                 console.log("에러발생", err);
